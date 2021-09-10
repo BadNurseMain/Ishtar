@@ -47,17 +47,15 @@ verifyCD:
 	push si
 	mov si, 0
 	
-	mov ah, 0x44
-	mov dl, 0xe0
+	mov ah, 0x44 		; Verify Disk Instruction for Interrupt 0x13.
+	mov dl, 0xe0		; Part of the Drive Table for CD
 	int 0x13
-	
-	mov si, FAILED
-	call printString
 	
 	cmp cf, 0
 	je verifyCD_CLEANUP
 	
-	
+	mov si, FAILED
+	call printString
 	
 	verifyCD_CLEANUP:
 		pop si
