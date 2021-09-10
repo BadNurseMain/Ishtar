@@ -41,9 +41,33 @@ printString: ; SI = String
 		pop bx
 	ret
 
+verifyCD:
+	push ax
+	push dx
+	push si
+	mov si, 0
+	
+	mov ah, 0x44
+	mov dl, 0xe0
+	int 0x13
+	
+	mov si, FAILED
+	call printString
+	
+	cmp cf, 0
+	je verifyCD_CLEANUP
+	
+	
+	
+	verifyCD_CLEANUP:
+		pop si
+		pop dx
+		pop ax
+	ret
+
 ; Define Declarations.
 MSG db 'Howdy x', 0
-
+FAILED db 'Failed...', 0
 _start:
 	mov si, MSG
 	call printString
