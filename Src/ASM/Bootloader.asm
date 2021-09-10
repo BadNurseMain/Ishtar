@@ -51,7 +51,10 @@ verifyCD:
 	mov dl, 0xe0		; Part of the Drive Table for CD
 	int 0x13
 	
-	cmp cf, 0
+	pushf
+	pop ax
+	and ax, 1
+	cmp ax, 0
 	je verifyCD_CLEANUP
 	
 	mov si, FAILED
