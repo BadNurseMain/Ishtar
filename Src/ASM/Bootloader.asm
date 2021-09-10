@@ -25,7 +25,7 @@ printString: ; SI = String
 	mov ah, 0x0e	
 
 	printString_CMP:
-		mov al, byte [si+bx] 	; Offsetting from Start of String.
+		mov al, byte[si+bx] 	; Offsetting from Start of String.
 		int 0x10		; Interrupt for Character
 		
 		inc bx			; Incrementing BX to Change Offset.
@@ -35,6 +35,12 @@ printString: ; SI = String
 
 		cmp al, 0		; Proceeding unless NULL-Determined Character is Present.
 		jne printString_CMP			
+
+
+	mov al, 0x0D		; To present a new line.
+	int 0x10
+	mov al, 0x0a
+	int 0x10
 
 	printString_CLEANUP:
 		pop ax
@@ -72,6 +78,8 @@ FAILED db 'Failed...', 0
 _start:
 	mov si, MSG
 	call printString
+
+	call verifyCD
 
 	times 510 - ($ - $$) db 0
 	dw 0xaa55
