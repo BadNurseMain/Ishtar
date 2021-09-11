@@ -51,26 +51,35 @@ findDisk: 				; DL = Drive
 	cmp ah, 0			; If AH is 0, there is no drive present.
 	je findDisk_END
 
-	mov si, FOUND
-	call printString
-	mov al, dl			
+	mov al, dl			; Returns the Drive Number.	
+ret
+
 	findDisk_END:
-	mov al, 0
+	mov al, -1
 ret						; Returns the Drive Number or 0 if there is no Drive Present.
 
+readDisk: 				; DL = Drive, CL = Sector, AL = Sectors to Read, ES:BX Pointer.
+	mov ah, 0x02
+	mov ch, 0
+	mov dh, 0
+	int 0x13
+ret
 
 ; Define Declarations.
-MSG db 'Howdy x', 0
-FAILED db 'Failed...', 0
-FOUND db 'Found Drive...', 0
+BOOTMESSAGE db 'Started Ishtar', 0
+FAILED db 'Failed', 0
+FOUND db 'Found Drive', 0
 
 _start:
-	mov si, MSG
+	mov si, BOOTMESSAGE
 	call printString
 
 	mov dx, 0
 	_driveSearchLoop:
 		call findDisk
+		cmp al, -1
+		jne _driveFound
+		
 		inc dx
 
 		cmp dx, 10
@@ -78,5 +87,27 @@ _start:
 
 	mov si, FAILED
 	call printString
+
+_driveFound:
+	mov si, FOUND
+	call printString
+
+	mov dl, al
+	mov cl, 2
+	mov al, 1
+
+	mov bx, 0xa000
+	mov es, bx
+	mov bx, 0x1234
+
+	call readDisk
+	jc _driveError
+	jmp _finish
+
+_driveError:
+	mov si, FAILED
+	call printString
+
+_finish:
 	times 510 - ($ - $$) db 0
 	dw 0xaa55
