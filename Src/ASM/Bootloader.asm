@@ -34,7 +34,7 @@ printString: ; SI = String
 		jne printString_CMP			
 
 
-	mov al, 0x0D		; To present a new line.
+	mov al, 0x0D			; To present a new line.
 	int 0x10
 	mov al, 0x0a
 	int 0x10
@@ -45,7 +45,7 @@ printString: ; SI = String
 ret
 
 findDisk: 				; DL = Drive
-	mov ah, 0x15		; Disk Checking Interrupt.
+	mov ah, 0x15			; Disk Checking Interrupt.
 	int 0x13
 
 	cmp ah, 0			; If AH is 0, there is no drive present.
@@ -56,7 +56,7 @@ ret
 
 	findDisk_END:
 	mov al, -1
-ret						; Returns the Drive Number or 0 if there is no Drive Present.
+ret					; Returns the Drive Number or 0 if there is no Drive Present.
 
 readDisk: 				; DL = Drive, CL = Sector, AL = Sectors to Read, ES:BX Pointer.
 	mov ah, 0x02
