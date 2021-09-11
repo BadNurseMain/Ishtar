@@ -11,9 +11,6 @@ _setup:
 	mov ax, 0x07C0		; Set data segment to where we're loaded
 	mov ds, ax
 
-	mov ax, 0x1000		; Set up Extra Segment
-	mov es, ax
-
 	jmp _start
 
 ; Function Declarations.
@@ -45,41 +42,41 @@ printString: ; SI = String
 	printString_CLEANUP:
 		pop ax
 		pop bx
-	ret
+ret
 
-verifyCD:
-	push ax
-	push dx
-	push si
-	mov si, 0
-	
-	mov ah, 0x44 		; Verify Disk Instruction for Interrupt 0x13.
-	mov dl, 0xe0		; Part of the Drive Table for CD
+findDisk: 				; DL = Drive
+	mov ah, 0x15		; Disk Checking Interrupt.
 	int 0x13
-	
-	pushf
-	pop ax
-	and ax, 1
-	cmp ax, 0
-	je verifyCD_CLEANUP
-	
-	mov si, FAILED
+
+	cmp ah, 0			; If AH is 0, there is no drive present.
+	je findDisk_END
+
+	mov si, FOUND
 	call printString
-	
-	verifyCD_CLEANUP:
-		pop si
-		pop dx
-		pop ax
-	ret
+	mov al, dl			
+	findDisk_END:
+	mov al, 0
+ret						; Returns the Drive Number or 0 if there is no Drive Present.
+
 
 ; Define Declarations.
 MSG db 'Howdy x', 0
 FAILED db 'Failed...', 0
+FOUND db 'Found Drive...', 0
+
 _start:
 	mov si, MSG
 	call printString
 
-	call verifyCD
+	mov dx, 0
+	_driveSearchLoop:
+		call findDisk
+		inc dx
 
+		cmp dx, 10
+		jne _driveSearchLoop
+
+	mov si, FAILED
+	call printString
 	times 510 - ($ - $$) db 0
 	dw 0xaa55
