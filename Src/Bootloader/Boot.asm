@@ -55,8 +55,6 @@ _printString:
     ret
 
 %include "Bootloader/GDT.s"
-%define VGAMEM_START 0xb8000
-%define DEFAULT_CHAR 0x0f00
 
 _main:
     call _initVideo
