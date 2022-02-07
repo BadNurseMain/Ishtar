@@ -34,33 +34,11 @@ _readDisk:
     
     ret
 
-_printChar: ; al = Character.
-    mov ah, 0x0e
-    int 0x10
-    ret
-
-_printString:
-    push bx
-    mov bx, si
-
-    _printString_Loop:
-    mov al, byte[bx]
-    call _printChar
-    inc bx
-   
-    cmp al, 0
-    jne _printString_Loop
-
-    pop bx
-    ret
-
 %include "Bootloader/GDT.s"
 
 _main:
     call _initVideo
     call _readDisk
-    mov si, KernelText
-    call _printString
     
     cli
 
@@ -70,13 +48,7 @@ _main:
     xor eax, 1
     mov cr0, eax
 
-    mov ecx, 'e'
-    mov ebx, 0x0301
-    push ecx
-    push ebx
-
     jmp 0x9000
-    KernelText db "Kernel Loaded", 0
 
     times 510 - ($ - $$) db 0
     dw 0xaa55
