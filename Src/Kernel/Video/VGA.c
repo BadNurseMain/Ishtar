@@ -31,6 +31,10 @@ void placeChar(int8_t Char, int16_t Location)
 
 void placePixel(int8_t Colour, int32_t Location)
 {
-    
+    int16_t XPosition = LODWORD(Location);
+    int16_t YPosition = HIDWORD(Location);
+
+    int8_t* VideoAddress = GFX_VGA_VIDEOMEM + (XPosition * 320 +  YPosition * 200);
+    *VideoAddress = Colour;
     return;
 }
