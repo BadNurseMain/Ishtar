@@ -1,5 +1,6 @@
 #ifndef STDINT
 #define STDINT
+
 #include <stdint.h>
 
 #endif STDINT
@@ -9,6 +10,10 @@
 
 #define HIWORD(x) (x >> 8) << 8
 #define LOWORD(x) (x << 8) >> 8
+
+
+#define HIDWORD(x) (x >> 16) << 16
+#define LODWORD(x) (x << 16) >> 16
 
 #endif MACROS
 
@@ -28,7 +33,6 @@
 #define VGA_COLOUR_GREEN    0x0002
 
 #endif
-
 
 void setVideoMode(int8_t Mode);
 int8_t getVideoMode();
