@@ -16,8 +16,8 @@
 #define GFX_DEF
 
 //VGA Video Mode Types.
-#define GFX_VGA_TEXTMODE        0x03
-#define GFX_VGA_VIDEOMODE       0x0D
+#define GFX_VGA_TEXTMODE    0x03
+#define GFX_VGA_VIDEOMODE   0x0D
 
 //VGA Text Types.
 #define VGA_DEFAULT_CHAR    0x0f00
