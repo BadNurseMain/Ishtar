@@ -3,39 +3,15 @@
 
 #include <stdint.h>
 
-#endif STDINT
+#define LOBYTE(w) ((uint8_t)(w))
+#define HIBYTE(w) ((uint8_t)(((uint16_t)(w) >> 8) & 0xFF))
 
-#ifndef MACROS
-#define MACROS
+#endif 
 
-#define HIWORD(x) (x >> 8) << 8
-#define LOWORD(x) (x << 8) >> 8
+void print(char* String);
 
+void placeChar(uint16_t Position, uint8_t Character);
 
-#define HIDWORD(x) (x >> 16) << 16
-#define LODWORD(x) (x << 16) >> 16
+void placeNum(uint16_t Position, uint32_t Number);
 
-#endif MACROS
-
-#ifndef GFX_DEF
-#define GFX_DEF
-
-//VGA Video Mode Types.
-#define GFX_VGA_TEXTMODE    0x03
-#define GFX_VGA_VIDEOMODE   0x0D
-
-//VGA Text Types.
-#define VGA_DEFAULT_CHAR    0x0f00
-
-//VGA Colours.
-#define VGA_COLOUR_BLACK    0x0000
-#define VGA_COLOUR_BLUE     0x0001
-#define VGA_COLOUR_GREEN    0x0002
-
-#endif
-
-void setVideoMode(int8_t Mode);
-int8_t getVideoMode();
-
-void placeChar(int8_t Char, int16_t Location);
-void placePixel(int8_t Colour, int32_t Location);
+inline uint8_t getGraphicsMode();
