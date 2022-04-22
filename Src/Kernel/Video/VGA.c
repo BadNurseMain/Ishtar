@@ -1,40 +1,54 @@
 #include "Video.h"
 
-//Memory Mapped Addresses for VGA.
-#define GFX_VGA_VIDEOMEM        0xA0000
-#define GFX_VGA_TEXTMEM         0xB8000
-#define GFX_VGA_MODE            0x0449
+#define VGA_TEXTMEM (uint16_t*)0xb8000
 
-void setVideoMode(int8_t Mode)
+uint16_t Count = 0;
+
+void print(char* String)
 {
-    int8_t* ModeAddress = GFX_VGA_MODE;
-    *ModeAddress = Mode;
+    uint16_t Loop = Count;
+    
+    do
+    {
+        placeChar(Loop, String[Loop]);
+        ++Loop;
+    } while(String[Loop]);
+
+    Count += 0x0100;
     return;
 }
 
-int8_t getVideoMode()
+void placeNum(uint16_t Position, uint32_t Number)
 {
-    int8_t* ModeAddress = GFX_VGA_MODE;
-    return *ModeAddress;
-}
+    //Declaring Variables.
+    uint32_t Count = 0, tempNum = Number, num = 0;
 
-void placeChar(int8_t Char, int16_t Location)
-{
-    int8_t XPosition = LOWORD(Location);
-    int8_t YPosition = HIWORD(Location);
+    //Calculating Length.
+    for(; tempNum > 0; tempNum = tempNum / 10) ++Count;
+    Position += Count;
 
-    int16_t* CharAddress = GFX_VGA_TEXTMEM + (XPosition * 80 + YPosition) * 2;
+    //Looping through all numbers and displaying them.
+    do
+    {
+        num = Number % 10;
+        placeChar(--Position, num + '0');
+        Number = Number / 10;
+    }
+    while(Number > 0);
 
-    *CharAddress = VGA_DEFAULT_CHAR | Char;
     return;
 }
 
-void placePixel(int8_t Colour, int32_t Location)
+void placeChar(uint16_t Position, uint8_t Character)
 {
-    int16_t XPosition = LODWORD(Location);
-    int16_t YPosition = HIDWORD(Location);
+    uint16_t* VideoMemory = VGA_TEXTMEM + ((HIBYTE(Position) * 80) + LOBYTE(Position) * 2); 
 
-    int8_t* VideoAddress = GFX_VGA_VIDEOMEM + (XPosition * 320 +  YPosition * 200);
-    *VideoAddress = Colour;
+    *VideoMemory = 0x0f00 + Character;
     return;
+}
+
+inline uint8_t getGraphicsMode()
+{
+    uint8_t* Ptr = (uint8_t*)0x0449;
+    return *Ptr;    
 }
